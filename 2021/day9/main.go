@@ -34,7 +34,10 @@ func findLowPoints(matrix [][]int) int {
 	for row := 0; row < len(matrix); row++ {
 		for col := 0; col < len(matrix[row]); col++ {
 			if isLowPoint(matrix, row, col) {
-				sum += matrix[row][col] + 1
+				basin := make([]int, 0)
+				traceBasin(matrix, row, col, &basin)
+				fmt.Println(basin)
+				fmt.Println(len(basin))
 			}
 		}
 	}
@@ -53,34 +56,35 @@ func isLowPoint(matrix [][]int, row, col int) bool {
 	return false
 }
 
-func traceBasin(matrix [][]int, row, col int) {
-	// lowPoint := matrix[row][col]
+func traceBasin(matrix [][]int, row, col int, basin *[]int) {
+	*basin = append(*basin, matrix[row][col])
+	lowPoint := matrix[row][col]
 
-	// up := 10
-	// down := 10
-	// left := 10
-	// right := 10
+	if lowPoint == 9 {
+		return
+	}
 
-	// if row != 0 {
-	// 	up = matrix[row-1][col]
-	// }
+	up, down, left, right := getNeighbours(matrix, row, col)
 
-	// if col != 0 {
-	// 	left = matrix[row][col-1]
-	// }
+	if up == lowPoint+1 {
+		traceBasin(matrix, row-1, col, basin)
+	}
 
-	// if row != len(matrix)-1 {
-	// 	down = matrix[row+1][col]
-	// }
+	if down == lowPoint+1 {
+		traceBasin(matrix, row+1, col, basin)
+	}
 
-	// if col != len(matrix[row])-1 {
-	// 	right = matrix[row][col+1]
-	// }
+	if left == lowPoint+1 {
+		traceBasin(matrix, row, col-1, basin)
+	}
 
-	// if up == lowPoint+1 {
-	// 	traceBasin(matrix, row+1, col)
-	// }
+	if right == lowPoint+1 {
+		traceBasin(matrix, row, col+1, basin)
+	}
+}
 
+func checkIfAddedInBasin(matrix [][]int, row, col) {
+	
 }
 
 func getNeighbours(matrix [][]int, row, col int) (int, int, int, int) {

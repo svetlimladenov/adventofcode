@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	input := "easy.txt"
+	input := "input.txt"
 
 	file, err := os.Open(input)
 	if err != nil {
@@ -30,18 +31,26 @@ func main() {
 }
 
 func findLowPoints(matrix [][]int) int {
-	sum := 0
+	basins := make([]int, 0)
 	for row := 0; row < len(matrix); row++ {
 		for col := 0; col < len(matrix[row]); col++ {
 			if isLowPoint(matrix, row, col) {
-				basin := make([]int, 0)
+				basin := make([]string, 0)
 				traceBasin(matrix, row, col, &basin)
-				fmt.Println(basin)
-				fmt.Println(len(basin))
+				basins = append(basins, len(basin))
 			}
 		}
 	}
-	return sum
+
+	sort.Slice(basins, func(i, j int) bool {
+		return basins[i] > basins[j]
+	})
+
+	fmt.Println(basins[0])
+	fmt.Println(basins[1])
+	fmt.Println(basins[2])
+
+	return basins[0] * basins[1] * basins[2]
 }
 
 func isLowPoint(matrix [][]int, row, col int) bool {
@@ -56,35 +65,43 @@ func isLowPoint(matrix [][]int, row, col int) bool {
 	return false
 }
 
-func traceBasin(matrix [][]int, row, col int, basin *[]int) {
-	*basin = append(*basin, matrix[row][col])
+func traceBasin(matrix [][]int, row, col int, basin *[]string) {
 	lowPoint := matrix[row][col]
-
+	if contains(*basin, fmt.Sprintf("%d:%d-%d", row, col, lowPoint)) {
+		return
+	}
 	if lowPoint == 9 {
 		return
 	}
 
+	*basin = append(*basin, fmt.Sprintf("%d:%d-%d", row, col, lowPoint))
+
 	up, down, left, right := getNeighbours(matrix, row, col)
 
-	if up == lowPoint+1 {
+	if up != 10 && up > lowPoint {
 		traceBasin(matrix, row-1, col, basin)
 	}
 
-	if down == lowPoint+1 {
+	if down != 10 && down > lowPoint {
 		traceBasin(matrix, row+1, col, basin)
 	}
 
-	if left == lowPoint+1 {
+	if left != 10 && left > lowPoint {
 		traceBasin(matrix, row, col-1, basin)
 	}
 
-	if right == lowPoint+1 {
+	if right != 10 && right > lowPoint {
 		traceBasin(matrix, row, col+1, basin)
 	}
 }
 
-func checkIfAddedInBasin(matrix [][]int, row, col) {
-	
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 func getNeighbours(matrix [][]int, row, col int) (int, int, int, int) {

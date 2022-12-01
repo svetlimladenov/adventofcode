@@ -1,4 +1,4 @@
-package day9
+package main
 
 import (
 	"bufio"
@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Solve() {
+func main() {
 	wd, _ := os.Getwd()
 	input := wd + "/cmd/day9/input.txt"
 

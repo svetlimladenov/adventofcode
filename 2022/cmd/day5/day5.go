@@ -30,6 +30,8 @@ func main() {
 		}
 	}
 
+	a := data[2][2:3]
+	fmt.Println(a)
 	commands := strings.Split(inputParts[1], "\n")
 
 	for _, cmd := range commands {
@@ -38,28 +40,17 @@ func main() {
 		to, _ := strconv.Atoi(commandParts[5])
 		count, _ := strconv.Atoi(commandParts[1])
 
-		for i := 0; i < count; i++ {
-			fromLastElementIndex := len(data[from]) - 1
-			elementToMove := data[from][fromLastElementIndex]
-			data[to] = append(data[to], elementToMove)
-			data[from] = data[from][:fromLastElementIndex]
-		}
+		fromLastElementIndex := len(data[from])
+		elementsToMove := data[from][fromLastElementIndex-count : fromLastElementIndex]
+		data[to] = append(data[to], elementsToMove...)
+		data[from] = data[from][:fromLastElementIndex-count]
 	}
 
 	// map iteration with range is not stable !!!
-	for i := 1; i < len(data)+2; i++ {
+	for i := 1; i < len(data)+1; i++ {
 		array := data[i]
 		fmt.Print(string(array[len(array)-1]))
 	}
 
 	fmt.Println()
-}
-
-func print(data map[int][]byte) {
-	for i, v := range data {
-		for _, c := range v {
-			fmt.Println(string(c), i)
-		}
-		fmt.Println()
-	}
 }

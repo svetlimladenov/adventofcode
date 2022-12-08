@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "embed"
 	"fmt"
 	"strconv"
 	"strings"
@@ -13,10 +12,10 @@ var input string
 func main() {
 	inputParts := strings.Split(input, "\n\n")
 
+	// Split the input into lines, then iterate over them backwards to
+	// build the data map.
 	stacks := strings.Split(inputParts[0], "\n")
-
 	data := make(map[int][]byte)
-
 	for i := len(stacks) - 2; i >= 0; i-- {
 		line := stacks[i]
 		pile := 1
@@ -30,10 +29,9 @@ func main() {
 		}
 	}
 
-	a := data[2][2:3]
-	fmt.Println(a)
+	// Split the input commands into lines, then iterate over them to
+	// execute the commands.
 	commands := strings.Split(inputParts[1], "\n")
-
 	for _, cmd := range commands {
 		commandParts := strings.Split(cmd, " ")
 		from, _ := strconv.Atoi(commandParts[3])
@@ -46,11 +44,10 @@ func main() {
 		data[from] = data[from][:fromLastElementIndex-count]
 	}
 
-	// map iteration with range is not stable !!!
+	// Iterate over the data map to print the final state of the stacks.
 	for i := 1; i < len(data)+1; i++ {
 		array := data[i]
 		fmt.Print(string(array[len(array)-1]))
 	}
-
 	fmt.Println()
 }

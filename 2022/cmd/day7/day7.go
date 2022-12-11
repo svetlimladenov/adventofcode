@@ -23,7 +23,6 @@ func main() {
 		if lineParts[0] == "$" {
 			processCmd(lineParts)
 		} else if lineParts[0] == "dir" {
-			fmt.Println("Directory :", lineParts[1])
 			currentDir.SubDirectories[lineParts[1]] = NewDirectory(lineParts[1])
 			currentDir.SubDirectories[lineParts[1]].ParentDirectory = currentDir
 			// Directory
@@ -34,7 +33,9 @@ func main() {
 		}
 	}
 
-	fmt.Println(root)
+	fmt.Printf("root.Sum(): %v\n", root.Sum())
+
+	fmt.Println(result)
 }
 
 func processCmd(cmd []string) {
@@ -59,6 +60,7 @@ func processCmd(cmd []string) {
 			currentDir = newDir
 		}
 	}
+
 }
 
 func processFile(lineParts []string) *File {
@@ -98,13 +100,24 @@ func NewDirectory(path string) *Directory {
 	}
 }
 
-// {
-// 	"/": {
-// 		"a": {
-// 			"a": 1234
-// 		},
-// 		"b" {
-// 			"b": 1234
-// 		}
-// 	}
-// }
+var result int64
+
+func (d *Directory) Sum() int64 {
+	var sum int64
+	sum = 0
+	for _, f := range d.Files {
+		sum += f.Size
+	}
+
+	for _, sd := range d.SubDirectories {
+		sdSum := sd.Sum()
+		sum += sdSum
+	}
+
+	if sum < 100000 {
+		result += sum
+		fmt.Printf("Dir sum: %d\n", sum)
+	}
+
+	return sum
+}

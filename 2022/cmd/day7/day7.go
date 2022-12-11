@@ -11,6 +11,7 @@ import (
 var input string
 var root Directory
 var currentDir *Directory
+var smallestToDelete int64 = 70000000
 
 func main() {
 	root = *NewDirectory("/")
@@ -33,9 +34,16 @@ func main() {
 		}
 	}
 
-	fmt.Printf("root.Sum(): %v\n", root.Sum())
+	usedSpace := root.Sum()
+	fmt.Printf("usedSpace: %v\n", usedSpace)
 
-	fmt.Println(result)
+	freeSpace := 70000000 - usedSpace
+
+	neededForUpdate := 30000000 - freeSpace
+
+	fmt.Printf("neededForUpdate: %v\n", neededForUpdate)
+
+	root.ClosestTo(neededForUpdate)
 }
 
 func processCmd(cmd []string) {
@@ -117,6 +125,30 @@ func (d *Directory) Sum() int64 {
 	if sum < 100000 {
 		result += sum
 		fmt.Printf("Dir sum: %d\n", sum)
+	}
+
+	return sum
+}
+
+func (d *Directory) ClosestTo(spaceNeeded int64) int64 {
+	var sum int64
+	sum = 0
+	for _, f := range d.Files {
+		sum += f.Size
+	}
+
+	for _, sd := range d.SubDirectories {
+		sdSum := sd.ClosestTo(spaceNeeded)
+		sum += sdSum
+	}
+
+	fmt.Printf("Dir sum %s: %d\n", d.Path, sum)
+
+	if sum >= spaceNeeded {
+		if smallestToDelete > sum {
+			fmt.Printf("ok to delete %q - %d\n", d.Path, sum)
+			smallestToDelete = sum
+		}
 	}
 
 	return sum

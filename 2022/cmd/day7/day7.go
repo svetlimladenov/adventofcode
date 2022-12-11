@@ -9,47 +9,54 @@ import (
 
 //go:embed input.txt
 var input string
-var root *Directory
+var root Directory
+var currentDir *Directory
 
 func main() {
-	root = NewDirectory("/")
+	root = *NewDirectory("/")
 
-	currentDirectory := *root
+	currentDir = &root
 
 	lines := parseInput(input)
 	for _, l := range lines {
 		lineParts := parseLine(l)
 		if lineParts[0] == "$" {
-			processCmd(lineParts, &currentDirectory)
+			processCmd(lineParts)
 		} else if lineParts[0] == "dir" {
 			fmt.Println("Directory :", lineParts[1])
-			currentDirectory.SubDirectories[lineParts[1]] = NewDirectory(lineParts[1])
-			currentDirectory.SubDirectories[lineParts[1]].ParentDirectory = &currentDirectory
+			currentDir.SubDirectories[lineParts[1]] = NewDirectory(lineParts[1])
+			currentDir.SubDirectories[lineParts[1]].ParentDirectory = currentDir
 			// Directory
 		} else {
 			// File
 			file := processFile(lineParts)
-			currentDirectory.Files = append(currentDirectory.Files, *file)
+			currentDir.Files = append(currentDir.Files, *file)
 		}
 	}
+
+	fmt.Println(root)
 }
 
-func processCmd(cmd []string, dir *Directory) {
+func processCmd(cmd []string) {
 	if cmd[1] == "cd" {
 		newPath := cmd[2]
 
-		fmt.Printf("Changing directory from %s to %s\n", dir.Path, newPath)
+		fmt.Printf("Changing directory from %s to %s\n", currentDir.Path, newPath)
 
 		if newPath == "/" {
 			// go to root
-			*dir = *root
-		} else if newPath == ".." {
+			currentDir = &root
+			return
+		}
+
+		if newPath == ".." {
 			// go to parent
-			*dir = *dir.ParentDirectory
+			currentDir = currentDir.ParentDirectory
 		} else {
 			// go to child directory
-			newDir := *dir.SubDirectories[newPath]
-			newDir.ParentDirectory = dir // ParentDir points to currentDir
+			newDir := currentDir.SubDirectories[newPath]
+			newDir.ParentDirectory = currentDir // ParentDir points to currentDir
+			currentDir = newDir
 		}
 	}
 }

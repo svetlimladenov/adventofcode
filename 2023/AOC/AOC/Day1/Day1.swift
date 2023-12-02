@@ -106,7 +106,7 @@ func getStringNumbersReversed(_ line: String) -> Int {
     return Int("\(firstNumber)\(lastNumber)")!
 }
 
-func Day1Reverse(_ input: String) {
+func Day1Reverse(_ input: String) -> Int {
     let lines = input.split(whereSeparator: \.isNewline)
     
     var sum = 0
@@ -115,5 +115,5 @@ func Day1Reverse(_ input: String) {
         sum += n
     }
     
-    print(sum)
+    return sum
 }

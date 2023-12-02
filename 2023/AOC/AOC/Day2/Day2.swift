@@ -48,7 +48,7 @@ func Day2PartOne(_ input: String) {
     print("Result \(result)")
 }
 
-func Day2PartTwo(_ input: String) {
+func Day2PartTwo(_ input: String) -> Int {
     let games = input.split(whereSeparator: \.isNewline)
     
     var result = 0
@@ -81,5 +81,5 @@ func Day2PartTwo(_ input: String) {
         result += store["red"]! * store["blue"]! * store["green"]!
     }
     
-    print("Result \(result)")
+    return result
 }

@@ -16,19 +16,20 @@ def main():
         firstColumn.append(a)
         secondColumn.append(b)
 
-    res = 0
-    for x in range(0, len(firstColumn)):
+
+    for x in firstColumn:
         maxIndexFirst = firstColumn.index(min(firstColumn))
         maxIndexSecond = secondColumn.index(min(secondColumn))
 
         maxFirst = firstColumn.pop(maxIndexFirst)
         maxSecond = secondColumn.pop(maxIndexSecond)
 
-        diff = abs(int(maxFirst) - int(maxSecond))
-        print(diff)
-        res += diff
+        print("first", maxFirst)
+        print("secomd", maxSecond)
 
-    print(res)
+    print(firstColumn)
+    print(secondColumn)
+
 
 if __name__ == "__main__":
     main()

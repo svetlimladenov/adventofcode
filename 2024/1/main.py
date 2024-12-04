@@ -3,30 +3,18 @@ def main():
     with open("./in.txt", "r") as file:
         input = file.read().rstrip()
 
-    firstColumn = []
-    secondColumn = []
+    data = input.split()
+    firstColumn, secondColumn = sorted(data[0::2]), sorted(data[1::2])
 
-    lines = input.split("\n")
-    for i in lines:
-        a, b = i.split("   ")
-        firstColumn.append(a)
-        secondColumn.append(b)
-
-    print(f"Part : {partOne(firstColumn, secondColumn)}")
-    print(f"second: {partTwo(firstColumn, secondColumn)}")
+    print(f"First: {partOne(firstColumn, secondColumn)}")
+    print(f"Second: {partTwo(firstColumn, secondColumn)}")
 
 
 def partOne(firstColumn: list, secondColumn: list) -> int:
     res = 0
-    for _ in range(0, len(firstColumn)):
-        maxIndexFirst = firstColumn.index(min(firstColumn))
-        maxIndexSecond = secondColumn.index(min(secondColumn))
 
-        maxFirst = firstColumn.pop(maxIndexFirst)
-        maxSecond = secondColumn.pop(maxIndexSecond)
-
-        diff = abs(int(maxFirst) - int(maxSecond))
-        res += diff
+    for i, num in enumerate(firstColumn):
+        res += abs(int(num) - int(secondColumn[i]))
 
     return res
 
